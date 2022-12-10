@@ -4,10 +4,7 @@ import java.io.InputStream;
 import java.util.Properties;
 
 public class PropertiesReader {
-   // private final String path;
-    private Properties properties;
-
-    private static final String LOCAL_PROPERTIES_FILE_PATH = "configs/app.properties";
+    private static final String LOCAL_PROPERTIES_FILE_PATH = "configs/application.properties";
 
     public Properties getLocalProperties() {
         return readLocalProperties(LOCAL_PROPERTIES_FILE_PATH);
@@ -19,15 +16,16 @@ public class PropertiesReader {
 
     static Properties readLocalProperties(InputStream appPropertiesInputStream) {
         Properties appProperties = new Properties();
-        try (InputStream in = appPropertiesInputStream) {
-            appProperties.load(in);
+
+        try (InputStream inputStream = appPropertiesInputStream) {
+            appProperties.load(inputStream);
         } catch (Exception e) {
             throw new RuntimeException("Cannot read application properties file", e);
         }
         return appProperties;
     }
 
-  /*  public PropertiesReader(String path) {
+  /*  public PropertiesReader(String path) { // todo need fix it
         this.path = path;
         properties = readProperties();
 

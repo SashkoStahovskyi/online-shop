@@ -4,6 +4,7 @@ import com.stahovskyi.onlineshop.dao.ProductDao;
 import com.stahovskyi.onlineshop.dao.jdbc.mapper.ProductRowMapper;
 import com.stahovskyi.onlineshop.entity.Product;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.sql.DataSource;
 import java.sql.*;
@@ -11,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @RequiredArgsConstructor
 public class JdbcProductDao implements ProductDao {
     private static final String DELETE_PRODUCT_QUERY = "DELETE FROM products WHERE id=?";
@@ -20,22 +22,20 @@ public class JdbcProductDao implements ProductDao {
     private static final String GET_PRODUCT_BY_ID_QUERY = "SELECT id, name, price, description, date FROM products WHERE id=?";
     private static final String SEARCH_PRODUCT_QUERY = "SELECT id,name, price, date, description FROM products WHERE name LIKE CONCAT( '%',?,'%') OR description LIKE CONCAT( '%',?,'%')";
     private static final ProductRowMapper PRODUCT_ROW_MAPPER = new ProductRowMapper();
-   // private final DataSource dataSource;
-    private final ConnectionFactory dataSource;
+    private final DataSource dataSource;
 
     @Override
-    public List<Product> findAll() {  // todo -> integration test needed
+    public List<Product> findAll() {               // todo -> integration test needed
         try (Connection connection = dataSource.getConnection();
              Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery(GET_ALL_PRODUCT_QUERY)) {
-
             List<Product> allProductsList = new ArrayList<>();
 
             while (resultSet.next()) {
                 Product product = PRODUCT_ROW_MAPPER.mapRow(resultSet);
                 allProductsList.add(product);
             }
-            // log.info("Executed: {}", GET_ALL_PRODUCT_QUERY); // todo -> investigation
+            log.info("Executed: {}", GET_ALL_PRODUCT_QUERY);
             return allProductsList;
 
         } catch (Exception e) {
@@ -53,10 +53,10 @@ public class JdbcProductDao implements ProductDao {
             preparedStatement.setString(3, product.getDescription());
             preparedStatement.setTimestamp(4, Timestamp.valueOf(product.getDate()));
             preparedStatement.executeUpdate();
-            // todo log.info("Executed: {}", preparedStatement);
+            log.info("Executed: {}", preparedStatement);
 
         } catch (SQLException e) {
-            throw new RuntimeException(" Unable add product to DB ! ", e);
+            throw new RuntimeException(" Unable add product : " + product + " to DB! ", e);
         }
     }
 
@@ -67,10 +67,10 @@ public class JdbcProductDao implements ProductDao {
 
             preparedStatement.setInt(1, id);
             preparedStatement.executeUpdate();
-            // todo log.info("Executed: {}", preparedStatement);
+            log.info("Executed: {}", preparedStatement);
 
         } catch (SQLException e) {
-            throw new RuntimeException(" Unable to delete from DB !", e);
+            throw new RuntimeException(" Unable to delete product with id: " + id, e);
         }
     }
 
@@ -85,10 +85,10 @@ public class JdbcProductDao implements ProductDao {
             preparedStatement.setInt(4, product.getId());
 
             preparedStatement.executeUpdate();
-            // todo log.info("Executed: {}", preparedStatement);
+            log.info("Executed: {}", preparedStatement);
 
         } catch (Exception e) {
-            throw new RuntimeException(" Unable to update !", e);
+            throw new RuntimeException(" Unable to update product " + product + " !", e);
         }
     }
 
@@ -96,15 +96,17 @@ public class JdbcProductDao implements ProductDao {
         try (Connection connection = dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(GET_PRODUCT_BY_ID_QUERY)) {
             preparedStatement.setInt(1, id);
+
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                // todo: log.info("Executed: {}", preparedStatement);
+                log.info("Executed: {}", preparedStatement);
+
                 if (resultSet.next()) {
                     return Optional.of(PRODUCT_ROW_MAPPER.mapRow(resultSet));
                 }
                 return Optional.empty();
             }
         } catch (Exception e) {
-            throw new RuntimeException("Unable to get product from DB", e);
+            throw new RuntimeException("Unable to get product by id: " + id + " from DB", e);
         }
     }
 
@@ -118,15 +120,17 @@ public class JdbcProductDao implements ProductDao {
             List<Product> productsList = new ArrayList<>();
 
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                log.info("Executed : {}", preparedStatement);
+
                 while (resultSet.next()) {
                     Product product = PRODUCT_ROW_MAPPER.mapRow(resultSet);
                     productsList.add(product);
                 }
             }
             return productsList;
-            // todo : need Logs here
+
         } catch (SQLException e) {
-            throw new RuntimeException("No matches found in DB !", e);
+            throw new RuntimeException("No matches found in DB for : " + searchText, e);
         }
     }
 }

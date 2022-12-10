@@ -1,31 +1,51 @@
 package com.stahovskyi.onlineshop.web.security;
 
-import com.stahovskyi.onlineshop.service.SecurityService;
+import com.stahovskyi.onlineshop.security.SecurityService;
 import jakarta.servlet.*;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
+import java.util.List;
 
+@Slf4j
 @AllArgsConstructor
 public class SecurityFilter implements Filter {
-
-    private final Logger LOGGER = LoggerFactory.getLogger(getClass());
-    private SecurityService securityService;
+    private final SecurityService securityService;
+    private final List<String> allowedPath = List.of("/login");
 
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws ServletException, IOException {
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
         HttpServletResponse httpServletResponse = (HttpServletResponse) response;
+        String requestURI = httpServletRequest.getRequestURI();
 
-        if (securityService.isCookieValid(httpServletRequest.getCookies())) {
-            chain.doFilter(request, response);
+        for (String allowedPath : allowedPath) {
+            if (requestURI.startsWith(allowedPath)) {
+                chain.doFilter(request, response);
+                return;
+            }
         }
-        httpServletResponse.sendRedirect("/login");
-        LOGGER.info("Cookie not valid --> sand redirect to Login_page !");
+
+        if (securityService.isTokenValid(httpServletRequest.getCookies())) {
+            chain.doFilter(request, response);
+            log.info("User token is authorized !!");
+
+        } else {
+            httpServletResponse.sendRedirect("/login");
+        }
     }
+
+    @Override
+    public void init(FilterConfig filterConfig) throws ServletException {
+        Filter.super.init(filterConfig);
+    }
+
+    @Override
+    public void destroy() {
+        Filter.super.destroy();
+    }
+
 }

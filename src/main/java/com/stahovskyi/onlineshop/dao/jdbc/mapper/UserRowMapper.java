@@ -7,9 +7,8 @@ import java.sql.SQLException;
 
 public class UserRowMapper {
 
-    User mapRow(ResultSet resultSet) throws SQLException {
-
-        String username = resultSet.getString("username");
+   public User mapRow(ResultSet resultSet) throws SQLException {
+        String username = resultSet.getString("user_name");
         String password = resultSet.getString("password");
 
         return User.builder()

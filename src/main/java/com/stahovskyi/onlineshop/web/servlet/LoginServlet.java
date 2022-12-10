@@ -1,46 +1,58 @@
 
 package com.stahovskyi.onlineshop.web.servlet;
 
-import com.stahovskyi.onlineshop.entity.User;
-import com.stahovskyi.onlineshop.service.SecurityService;
-import com.stahovskyi.onlineshop.service.UserService;
-import com.stahovskyi.onlineshop.web.mapper.UserRequestMapper;
-import com.stahovskyi.onlineshop.web.util.PageGenerator;
+import com.stahovskyi.onlineshop.security.SecurityService;
+import com.stahovskyi.onlineshop.util.PageGenerator;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.util.HashMap;
 
+@Slf4j
 @AllArgsConstructor
 public class LoginServlet extends HttpServlet {
-
-    private final Logger LOGGER = LoggerFactory.getLogger(getClass());
     private final PageGenerator pageGenerator = PageGenerator.instance();
-
-    private final UserService userService;
+    private final SecurityService securityService;
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
         String page = pageGenerator.getPage("log_in.html", new HashMap<>());
         response.getWriter().write(page);
     }
 
-    @Override
+    @Override                                                           //todo --> in filter for all exceptions check
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String username = request.getParameter("user-name");
+        String password = request.getParameter("password");
+        String token = securityService.login(username, password);
 
-        // todo : check user in DB if not create new User and give him cookie ! if ok do redirect
+        if (token != null) {
+            response.addCookie(new Cookie("user-token", token));
+            response.sendRedirect("/products");
+        } else
+            response.sendRedirect("/login");
 
-        User user = UserRequestMapper.toUser(request);
-        userService.save(user);
-        LOGGER.info("Save user to DB !");
+      /*  if (securityService.isUserExist(login, password)) {
+            log.info("User exist in DB !");
+            response.addCookie(securityService.generateToken());
+            response.sendRedirect("/products");
+
+        } else
+            securityService.login(user);
+        log.info("Save user to DB !");
+
+        response.addCookie(securityService.generateToken());
+        log.info("Send redirect to  --> /products !");
+        response.sendRedirect("/products");*/
+
+        // securityService.login return into loginServlet token
+        // add Max Age for cookie
 
     }
 }

@@ -3,7 +3,7 @@ package com.stahovskyi.onlineshop.web.servlet;
 import com.stahovskyi.onlineshop.entity.Product;
 import com.stahovskyi.onlineshop.service.ProductService;
 import com.stahovskyi.onlineshop.web.mapper.ProductRequestMapper;
-import com.stahovskyi.onlineshop.web.util.PageGenerator;
+import com.stahovskyi.onlineshop.util.PageGenerator;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

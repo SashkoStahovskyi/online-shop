@@ -1,4 +1,4 @@
-package com.stahovskyi.onlineshop.web.util;
+package com.stahovskyi.onlineshop.util;
 
 import freemarker.template.Configuration;
 import freemarker.template.Template;
