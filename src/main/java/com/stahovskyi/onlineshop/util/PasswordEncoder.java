@@ -18,5 +18,4 @@ public class PasswordEncoder {
         return DigestUtils.md2Hex(password);
     }
 
-    Map
 }
