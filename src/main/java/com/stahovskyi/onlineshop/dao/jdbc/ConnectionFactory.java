@@ -2,14 +2,11 @@ package com.stahovskyi.onlineshop.dao.jdbc;
 
 
 import lombok.SneakyThrows;
-import org.postgresql.ds.PGSimpleDataSource;
 
 import javax.sql.DataSource;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.SQLFeatureNotSupportedException;
 import java.util.Properties;
 import java.util.logging.Logger;
 
@@ -25,13 +22,13 @@ public class ConnectionFactory implements DataSource {
         this.password = properties.getProperty("db.password");
 
         if (url == null) {
-            throw new RuntimeException("Uri not provided !");
+            throw new RuntimeException(" Uri not provided !");
         }
         if (username == null) {
-            throw new RuntimeException("Username not provided !");
+            throw new RuntimeException(" Username not provided !");
         }
         if (password == null) {
-            throw new RuntimeException("Password not provided !");
+            throw new RuntimeException(" Password not provided !");
         }
     }
 
@@ -41,42 +38,42 @@ public class ConnectionFactory implements DataSource {
     }
 
     @Override
-    public Connection getConnection(String username, String password) throws SQLException {
+    public Connection getConnection(String username, String password) {
         return null;
     }
 
     @Override
-    public PrintWriter getLogWriter() throws SQLException {
+    public PrintWriter getLogWriter() {
         return null;
     }
 
     @Override
-    public void setLogWriter(PrintWriter out) throws SQLException {
+    public void setLogWriter(PrintWriter out) {
 
     }
 
     @Override
-    public void setLoginTimeout(int seconds) throws SQLException {
+    public void setLoginTimeout(int seconds) {
 
     }
 
     @Override
-    public int getLoginTimeout() throws SQLException {
+    public int getLoginTimeout() {
         return 0;
     }
 
     @Override
-    public Logger getParentLogger() throws SQLFeatureNotSupportedException {
+    public Logger getParentLogger() {
         return null;
     }
 
     @Override
-    public <T> T unwrap(Class<T> iface) throws SQLException {
+    public <T> T unwrap(Class<T> iface) {
         return null;
     }
 
     @Override
-    public boolean isWrapperFor(Class<?> iface) throws SQLException {
+    public boolean isWrapperFor(Class<?> iface) {
         return false;
     }
 }

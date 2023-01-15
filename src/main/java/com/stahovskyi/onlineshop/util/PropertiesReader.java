@@ -19,28 +19,11 @@ public class PropertiesReader {
 
         try (InputStream inputStream = appPropertiesInputStream) {
             appProperties.load(inputStream);
+
         } catch (Exception e) {
             throw new RuntimeException("Cannot read application properties file", e);
         }
         return appProperties;
     }
 
-  /*  public PropertiesReader(String path) { // todo need fix it
-        this.path = path;
-        properties = readProperties();
-
-    }
-
-    public Properties getProperties() {
-
-        return new Properties(properties);
-    }
-
-    private Properties readProperties() {
-        Properties properties = new Properties();
-        properties.
-        // read logic
-
-        return properties;
-    }*/
 }

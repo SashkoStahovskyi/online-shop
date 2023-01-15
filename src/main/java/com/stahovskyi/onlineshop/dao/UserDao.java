@@ -6,7 +6,7 @@ import java.util.Optional;
 
 public interface UserDao {
 
-    void save(User user);
-
     Optional<User> get(String login);
+
+    void save(String username, String hashedPassword, String salt);
 }

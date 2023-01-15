@@ -6,9 +6,15 @@ import com.stahovskyi.onlineshop.dao.jdbc.JdbcUserDao;
 import com.stahovskyi.onlineshop.security.SecurityService;
 import com.stahovskyi.onlineshop.service.ProductService;
 import com.stahovskyi.onlineshop.service.UserService;
+import com.stahovskyi.onlineshop.util.PasswordEncoder;
 import com.stahovskyi.onlineshop.util.PropertiesReader;
 import com.stahovskyi.onlineshop.web.security.SecurityFilter;
-import com.stahovskyi.onlineshop.web.servlet.*;
+import com.stahovskyi.onlineshop.web.servlet.AddServlet;
+import com.stahovskyi.onlineshop.web.servlet.DeleteServlet;
+import com.stahovskyi.onlineshop.web.servlet.EditeServlet;
+import com.stahovskyi.onlineshop.web.servlet.LoginServlet;
+import com.stahovskyi.onlineshop.web.servlet.SearchServlet;
+import com.stahovskyi.onlineshop.web.servlet.ViewAllServlet;
 import jakarta.servlet.DispatcherType;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.FilterHolder;
@@ -35,8 +41,9 @@ public class starter {
 
         // ---------------- service  ---------------
         ProductService productService = new ProductService(jdbcProductDao);
+        PasswordEncoder passwordEncoder = new PasswordEncoder();
         UserService userService = new UserService(jdbcUserDao);
-        SecurityService securityService = new SecurityService(userService);
+        SecurityService securityService = new SecurityService(passwordEncoder, userService);
 
         // ---------------- servlet ----------------
         ViewAllServlet viewAllProductsServlet = new ViewAllServlet(productService);

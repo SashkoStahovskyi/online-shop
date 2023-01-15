@@ -14,56 +14,47 @@ import java.util.UUID;
 
 @Slf4j
 @RequiredArgsConstructor
-public class SecurityService { // задача отримати юзера , для цього йоиму потрібен UserService ( а він вже отримує юєерів
-    // з різних сервісів
-    // SecService не знає про куки але генерує токен , сервлет працює зкукками і присвоює значення токена кукам
-
+public class SecurityService {
     private static final List<String> userTokenList = new ArrayList<>(); // todo --> need threads safe list
-
+    private static final String USER_TOKEN = "user-token";
+    private final PasswordEncoder passwordEncoder;
     private final UserService userService;
 
-    private final PasswordEncoder passwordEncoder;
 
-    // todo : generated salt for unique password
+    public String login(String username, String password) {
+        Optional<User> user = userService.getUser(username);
 
-    // todo : check password
+        if (user.isPresent()) {
+            User userFromDb = user.get();
+            String hashedPassword = userFromDb.getPassword();
+            String salt = userFromDb.getSalt();
+            String hash = passwordEncoder.generateHash(password, salt);
 
-   public String login(String username, String password) {
-
-        Optional<User> userFromDb = userService.getUser(username);
-        if (userFromDb.isPresent()) {
-            User user = userFromDb.get();
-            String passwordFromDb = user.getPassword();
-            String saltFromDb = user;
-            String hash = passwordEncoder.createEncryption(passwordFromDb);
-            String userHash = passwordEncoder.createEncryption()
+            if (hashedPassword.equals(hash)) {
+                log.info(" User credentials have been successfully authenticated !");
+                return generateToken();
+            }
         }
-
-
-
-        //String encryptedPassword = passwordEncoder.createEncryption(password);
-
-
-
-        // todo --> get user from db
-        // todo --> encryptPassword
-        // todo --> original password from db -> hash( password) -> hashed Password
-        // todo --> compare (hashed password from UI & from db)
-       return null;
-   }
+        String salt = passwordEncoder.generateSalt();
+        String hashedPassword = passwordEncoder.generateHash(password, salt);
+        userService.save(username, hashedPassword, salt);
+        log.info(" Save new user credentials !");
+        return generateToken();
+    }
 
     private String generateToken() {
         String uuid = UUID.randomUUID().toString();
         userTokenList.add(uuid);
+        log.info(" Create new token !");
         return uuid;
     }
 
     public boolean isTokenValid(Cookie[] cookies) {
         if (cookies != null) {
             for (Cookie cookie : cookies) {
-                if (cookie.getName().equals("user-token")) {
+                if (USER_TOKEN.equals(cookie.getName())) {
                     if (userTokenList.contains(cookie.getValue())) {
-                        log.info("Cookie is authorize !");
+                        log.info(" Client cookie is authorize successfully !");
                         return true;
                     }
                 }
@@ -72,7 +63,8 @@ public class SecurityService { // задача отримати юзера , д�
         return false;
     }
 
-    enum Session { // todo here need finish
+    // todo here need finish
+    enum Session {
 
     }
 

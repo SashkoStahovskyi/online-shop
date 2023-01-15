@@ -4,18 +4,15 @@ import org.apache.commons.codec.digest.DigestUtils;
 
 import java.util.UUID;
 
-public class PasswordEncoder {
+public class PasswordEncoder { // todo -> static context ??
 
-    public String createEncryption(String userPassword) {
-        return generateHash(userPassword) + salt;
+    public String generateHash(String password, String salt) {
+        return DigestUtils.md2Hex(password + salt);
     }
 
-    private String generateSalt() {
+    public String generateSalt() {
         return UUID.randomUUID().toString();
     }
 
-    private String generateHash(String password) {
-        return DigestUtils.md2Hex(password);
-    }
 
 }

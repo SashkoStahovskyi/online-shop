@@ -3,7 +3,6 @@ package com.stahovskyi.onlineshop.web.servlet;
 
 import com.stahovskyi.onlineshop.security.SecurityService;
 import com.stahovskyi.onlineshop.util.PageGenerator;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -21,38 +20,19 @@ public class LoginServlet extends HttpServlet {
     private final SecurityService securityService;
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String page = pageGenerator.getPage("log_in.html", new HashMap<>());
-        response.getWriter().write(page);
+        response.getWriter().write(page);       // todo - login page do better
     }
 
-    @Override                                                           //todo --> in filter for all exceptions check
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String username = request.getParameter("user-name");
+    @Override                                            //todo --> in filter for all exceptions check
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String username = request.getParameter("username");
         String password = request.getParameter("password");
         String token = securityService.login(username, password);
 
-        if (token != null) {
-            response.addCookie(new Cookie("user-token", token));
-            response.sendRedirect("/products");
-        } else
-            response.sendRedirect("/login");
-
-      /*  if (securityService.isUserExist(login, password)) {
-            log.info("User exist in DB !");
-            response.addCookie(securityService.generateToken());
-            response.sendRedirect("/products");
-
-        } else
-            securityService.login(user);
-        log.info("Save user to DB !");
-
-        response.addCookie(securityService.generateToken());
-        log.info("Send redirect to  --> /products !");
-        response.sendRedirect("/products");*/
-
-        // securityService.login return into loginServlet token
-        // add Max Age for cookie
-
+        response.addCookie(new Cookie("user-token", token)); // todo add max age for cookie
+        response.sendRedirect("/products");
     }
+
 }
