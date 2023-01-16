@@ -1,6 +1,7 @@
 
 package com.stahovskyi.onlineshop.web.servlet;
 
+import com.stahovskyi.onlineshop.entity.Credentials;
 import com.stahovskyi.onlineshop.security.SecurityService;
 import com.stahovskyi.onlineshop.util.PageGenerator;
 import jakarta.servlet.http.Cookie;
@@ -27,9 +28,12 @@ public class LoginServlet extends HttpServlet {
 
     @Override                                            //todo --> in filter for all exceptions check
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String username = request.getParameter("username");
-        String password = request.getParameter("password");
-        String token = securityService.login(username, password);
+       Credentials credentials = Credentials.builder()
+               .username(request.getParameter("username"))
+               .password(request.getParameter("password"))
+               .build();
+
+        String token = securityService.login(credentials);
 
         response.addCookie(new Cookie("user-token", token)); // todo add max age for cookie
         response.sendRedirect("/products");

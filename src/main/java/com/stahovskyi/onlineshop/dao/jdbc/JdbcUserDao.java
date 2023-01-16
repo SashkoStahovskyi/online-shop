@@ -2,6 +2,7 @@ package com.stahovskyi.onlineshop.dao.jdbc;
 
 import com.stahovskyi.onlineshop.dao.UserDao;
 import com.stahovskyi.onlineshop.dao.jdbc.mapper.UserRowMapper;
+import com.stahovskyi.onlineshop.entity.Credentials;
 import com.stahovskyi.onlineshop.entity.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,12 +26,12 @@ public class JdbcUserDao implements UserDao {
 
 
     @Override
-    public Optional<User> get(String login) {
+    public Optional<User> get(Credentials credentials) {
         // String searchWord = "%" + login + "%"; // todo ??
 
         try (Connection connection = dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(GET_USER_QUERY)) {
-            preparedStatement.setString(1, login);     // todo --> password
+            preparedStatement.setString(1, credentials.getUsername());     // todo --> password
 
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
 
@@ -49,11 +50,11 @@ public class JdbcUserDao implements UserDao {
     }
 
     @Override
-    public void save(String username, String hashedPassword, String salt) {
+    public void save(Credentials credentials, String hashedPassword, String salt) {
         try (Connection connection = dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(SAVE_USER_QUERY)) {
 
-            preparedStatement.setString(1, username);
+            preparedStatement.setString(1, credentials.getUsername());
             preparedStatement.setString(2, hashedPassword);
             preparedStatement.setString(3, salt);
             preparedStatement.executeUpdate();

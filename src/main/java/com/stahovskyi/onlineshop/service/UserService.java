@@ -2,6 +2,7 @@
 package com.stahovskyi.onlineshop.service;
 
 import com.stahovskyi.onlineshop.dao.UserDao;
+import com.stahovskyi.onlineshop.entity.Credentials;
 import com.stahovskyi.onlineshop.entity.User;
 import lombok.RequiredArgsConstructor;
 
@@ -11,12 +12,12 @@ import java.util.Optional;
 public class UserService {
     private final UserDao userDao;
 
-    public Optional<User> getUser(String login) {
-        return userDao.get(login);
+    public Optional<User> getUser(Credentials credentials) {
+        return userDao.get(credentials);
     }
 
-    public void save(String username, String hashedPassword, String salt) {
-        userDao.save(username, hashedPassword, salt);
+    public void save(Credentials credentials, String hashedPassword, String salt) {
+        userDao.save(credentials, hashedPassword, salt);
     }
 
 }

@@ -1,5 +1,6 @@
 package com.stahovskyi.onlineshop.security;
 
+import com.stahovskyi.onlineshop.entity.Credentials;
 import com.stahovskyi.onlineshop.entity.User;
 import com.stahovskyi.onlineshop.service.UserService;
 import com.stahovskyi.onlineshop.util.PasswordEncoder;
@@ -21,14 +22,14 @@ public class SecurityService {
     private final UserService userService;
 
 
-    public String login(String username, String password) {
-        Optional<User> user = userService.getUser(username);
+    public String login(Credentials credentials) {
+        Optional<User> user = userService.getUser(credentials);
 
         if (user.isPresent()) {
             User userFromDb = user.get();
             String hashedPassword = userFromDb.getPassword();
             String salt = userFromDb.getSalt();
-            String hash = passwordEncoder.generateHash(password, salt);
+            String hash = passwordEncoder.generateHash(credentials.getPassword(), salt);
 
             if (hashedPassword.equals(hash)) {
                 log.info(" User credentials have been successfully authenticated !");
@@ -36,8 +37,8 @@ public class SecurityService {
             }
         }
         String salt = passwordEncoder.generateSalt();
-        String hashedPassword = passwordEncoder.generateHash(password, salt);
-        userService.save(username, hashedPassword, salt);
+        String hashedPassword = passwordEncoder.generateHash(credentials.getPassword(), salt);
+        userService.save(credentials, hashedPassword, salt);
         log.info(" Save new user credentials !");
         return generateToken();
     }
