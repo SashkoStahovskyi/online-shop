@@ -25,8 +25,8 @@
     <div class="container">
         <div class="row m-md-5">
             <div class="text-center">
-                <h3 class="text-center">LOGIN</h3>
-                <a class="nav-link active" aria-current="page" href="/registration">OR CREATE NEW ACCOUNT </a>
+                <h3 class="text-center">CREATE NEW ACCOUNT</h3>
+                <a class="nav-link active" aria-current="page" href="/login">OR LOGIN </a>
             </div>
         </div>
     </div>
@@ -36,19 +36,21 @@
 
     <div class="col col-lg-3">
 
-        <form action="/login" method="POST">
+        <form action="/registration" method="POST">
             <div class="mb-3">
-                <input type="text" class="form-control"
-                       name="username" placeholder="username"  >
+                <input type="text" class="form-control" name="username" placeholder="username">
+
             </div>
 
             <div class="mb-3">
-                <input type="password" class="form-control"
-                       name="password" placeholder="password">
+                <input type="password" class="form-control" name="password" placeholder="password">
+
             </div>
-            <button type="submit" class="btn btn-success">SAVE</button>
+
+            <div class="row justify-content-md-center">
+                <button type="submit" class="btn btn-success" >register</button>
+            </div>
         </form>
-
     </div>
 </div>
 

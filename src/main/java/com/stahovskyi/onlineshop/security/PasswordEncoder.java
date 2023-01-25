@@ -1,4 +1,4 @@
-package com.stahovskyi.onlineshop.util;
+package com.stahovskyi.onlineshop.security;
 
 import org.apache.commons.codec.digest.DigestUtils;
 
@@ -13,6 +13,5 @@ public class PasswordEncoder { // todo -> static context ??
     public String generateSalt() {
         return UUID.randomUUID().toString();
     }
-
 
 }

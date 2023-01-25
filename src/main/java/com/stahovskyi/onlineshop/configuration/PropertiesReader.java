@@ -1,9 +1,9 @@
-package com.stahovskyi.onlineshop.util;
+package com.stahovskyi.onlineshop.configuration;
 
 import java.io.InputStream;
 import java.util.Properties;
 
-public class PropertiesReader {
+public class PropertiesReader { // todo file -> configuration
     private static final String LOCAL_PROPERTIES_FILE_PATH = "configs/application.properties";
 
     public Properties getLocalProperties() {

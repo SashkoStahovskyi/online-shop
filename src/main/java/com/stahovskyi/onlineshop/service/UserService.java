@@ -2,7 +2,7 @@
 package com.stahovskyi.onlineshop.service;
 
 import com.stahovskyi.onlineshop.dao.UserDao;
-import com.stahovskyi.onlineshop.entity.Credentials;
+import com.stahovskyi.onlineshop.web.security.entity.Credentials;
 import com.stahovskyi.onlineshop.entity.User;
 import lombok.RequiredArgsConstructor;
 

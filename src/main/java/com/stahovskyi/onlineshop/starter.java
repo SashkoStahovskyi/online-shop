@@ -3,16 +3,17 @@ package com.stahovskyi.onlineshop;
 import com.stahovskyi.onlineshop.dao.jdbc.ConnectionFactory;
 import com.stahovskyi.onlineshop.dao.jdbc.JdbcProductDao;
 import com.stahovskyi.onlineshop.dao.jdbc.JdbcUserDao;
-import com.stahovskyi.onlineshop.security.SecurityService;
+import com.stahovskyi.onlineshop.service.SecurityService;
 import com.stahovskyi.onlineshop.service.ProductService;
 import com.stahovskyi.onlineshop.service.UserService;
-import com.stahovskyi.onlineshop.util.PasswordEncoder;
-import com.stahovskyi.onlineshop.util.PropertiesReader;
+import com.stahovskyi.onlineshop.security.PasswordEncoder;
+import com.stahovskyi.onlineshop.configuration.PropertiesReader;
 import com.stahovskyi.onlineshop.web.security.SecurityFilter;
 import com.stahovskyi.onlineshop.web.servlet.AddServlet;
 import com.stahovskyi.onlineshop.web.servlet.DeleteServlet;
 import com.stahovskyi.onlineshop.web.servlet.EditeServlet;
 import com.stahovskyi.onlineshop.web.servlet.LoginServlet;
+import com.stahovskyi.onlineshop.web.servlet.RegisterServlet;
 import com.stahovskyi.onlineshop.web.servlet.SearchServlet;
 import com.stahovskyi.onlineshop.web.servlet.ViewAllServlet;
 import jakarta.servlet.DispatcherType;
@@ -52,6 +53,7 @@ public class starter {
         EditeServlet updateServlet = new EditeServlet(productService);
         SearchServlet searchServlet = new SearchServlet(productService);
         LoginServlet loginServlet = new LoginServlet(securityService);
+        RegisterServlet registerServlet = new RegisterServlet(securityService);
 
         //---------------- filter --------------------
         SecurityFilter securityFilter = new SecurityFilter(securityService);
@@ -63,6 +65,7 @@ public class starter {
         context.addServlet(new ServletHolder(searchServlet), "/products/search");
         context.addServlet(new ServletHolder(deleteServlet), "/products/delete");
         context.addServlet(new ServletHolder(updateServlet), "/products/edit");
+        context.addServlet(new ServletHolder(registerServlet), "/registration");
         context.addServlet(new ServletHolder(loginServlet), "/login");
         context.addFilter(new FilterHolder(securityFilter), "/*", EnumSet.of(DispatcherType.REQUEST));
 

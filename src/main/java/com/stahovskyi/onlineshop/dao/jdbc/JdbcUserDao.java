@@ -2,7 +2,7 @@ package com.stahovskyi.onlineshop.dao.jdbc;
 
 import com.stahovskyi.onlineshop.dao.UserDao;
 import com.stahovskyi.onlineshop.dao.jdbc.mapper.UserRowMapper;
-import com.stahovskyi.onlineshop.entity.Credentials;
+import com.stahovskyi.onlineshop.web.security.entity.Credentials;
 import com.stahovskyi.onlineshop.entity.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -61,7 +61,7 @@ public class JdbcUserDao implements UserDao {
             log.info("Executed: {}", SAVE_USER_QUERY);
 
         } catch (SQLException e) {
-            throw new RuntimeException("Unable to save user to DB !", e);
+            throw new RuntimeException(" Unable to save new user to DB !", e);
         }
     }
 
