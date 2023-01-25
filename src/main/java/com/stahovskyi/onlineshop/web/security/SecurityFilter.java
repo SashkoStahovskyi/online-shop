@@ -46,8 +46,8 @@ public class SecurityFilter implements Filter {
 
         if (securityService.isValid(token)) {
             log.info(" User with valid token !");
-            Session session = securityService.getSession(token);
-            httpServletRequest.setAttribute("session", session);
+        /*    Session session = securityService.getSession(token);
+            httpServletRequest.setAttribute("session", session);*/
             chain.doFilter(httpServletRequest, httpServletResponse);
 
         } else {

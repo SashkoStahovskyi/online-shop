@@ -30,7 +30,7 @@ public class LoginServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        Credentials credentials = getCredentials(request);
+      /*  Credentials credentials = getCredentials(request);
         Session session = securityService.login(credentials);
 
         if (Objects.nonNull(session)) {
@@ -41,7 +41,7 @@ public class LoginServlet extends HttpServlet {
         } else {
           //  response.sendError(HttpServletResponse.SC_FORBIDDEN, "Check syntax or create new account");
             response.sendRedirect("/registration");
-        }
+        }*/
     }
 
     private  Credentials getCredentials(HttpServletRequest request) {
