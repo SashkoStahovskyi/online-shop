@@ -5,6 +5,7 @@ import com.stahovskyi.onlineshop.service.SecurityService;
 import com.stahovskyi.onlineshop.util.PageGenerator;
 import com.stahovskyi.onlineshop.web.security.entity.Credentials;
 import com.stahovskyi.onlineshop.web.security.entity.Session;
+import com.stahovskyi.onlineshop.web.util.CredentialsUtil;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -19,38 +20,34 @@ import java.util.Objects;
 @Slf4j
 @AllArgsConstructor
 public class LoginServlet extends HttpServlet {
+
+    private static final int COOKIE_AGE = 10800;
     private final PageGenerator pageGenerator = PageGenerator.instance();
     private final SecurityService securityService;
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String page = pageGenerator.getPage("log_in.html", new HashMap<>());
-        response.getWriter().write(page);       // todo - login page do better
+        response.getWriter().write(page);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        Credentials credentials = getCredentials(request);
+        Credentials credentials = CredentialsUtil.getCredentials(request); // todo -> if Null ??
         Session session = securityService.login(credentials);
 
         if (Objects.nonNull(session)) {
             Cookie cookie = new Cookie("user-token", session.getToken());
-           // cookie.setMaxAge(session.getExpireDate().getSecond());
+            cookie.setMaxAge(COOKIE_AGE); // todo -> need secure
             response.addCookie(cookie);                      // todo  -> ERRORS in Filter
             response.sendRedirect("/products");
 
         } else {
             // here response error with link to registration page or error below
-          //  response.sendError(HttpServletResponse.SC_FORBIDDEN, "Check syntax or create new account");
+            //  response.sendError(HttpServletResponse.SC_FORBIDDEN, "Check syntax or create new account");
             response.sendRedirect("/registration");
         }
     }
 
-    private  Credentials getCredentials(HttpServletRequest request) {
-         return Credentials.builder()
-                .username(request.getParameter("username"))
-                .password(request.getParameter("password"))
-                .build();
-    }
 
 }

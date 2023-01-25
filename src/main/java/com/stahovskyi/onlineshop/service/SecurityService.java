@@ -7,6 +7,7 @@ import com.stahovskyi.onlineshop.web.security.entity.Session;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -17,30 +18,16 @@ import java.util.UUID;
 @Slf4j
 @RequiredArgsConstructor
 public class SecurityService {
-
     private static final Map<String, Session> sessionList = new HashMap<>(); // todo --> need threads safe list
-
-    // private static final List<String> userTokenList = new ArrayList<>();
-
-    private static final String USER_TOKEN = "user-token"; // todo need??
-
-    private static final int COOKIE_AGE = 7200;
+    private static final int COOKIE_AGE = 10800;
     private final PasswordEncoder passwordEncoder;
     private final UserService userService;
 
     public Session save(Credentials credentials) {
         String salt = passwordEncoder.generateSalt();  // todo static or one static method
         String hashedPassword = passwordEncoder.generateHash(credentials.getPassword(), salt);
-
         userService.save(credentials, hashedPassword, salt); // add salt into cred ??
-
-        Session session = createSession();
-        sessionList.put(session.getToken(), session);
-        log.info(" Add new session to session list ! ");
-
-        return session;
-      /*  String token = generateToken();
-        userTokenList.add(token);*/
+        return createSession();
     }
 
     public Session login(Credentials credentials) {
@@ -54,10 +41,7 @@ public class SecurityService {
 
             if (hashedPassword.equals(hash)) {
                 log.info(" User credentials have been successfully authenticated !");
-                Session session = createSession();
-                sessionList.put(session.getToken(), session);
-                log.info(" Add new session to session list ! ");
-                return session;
+                return createSession();
             }
         }
         return null;   // todo maybe possible write it better with optional??
@@ -66,11 +50,12 @@ public class SecurityService {
     private Session createSession() {
         Session session = Session.builder()
                 .token(generateToken())
-                .expireDate(/*LocalDateTime.now().plusSeconds(COOKIE_AGE)*/null)
+                .expireDate(LocalDateTime.now().plusSeconds(COOKIE_AGE))
                 .cart(new ArrayList<>())
                 .build();
 
-        log.info(" Create new session ! ");
+        sessionList.put(session.getToken(), session);
+        log.info(" Add new session to session list ! ");
         return session;
     }
 

@@ -4,6 +4,7 @@ import com.stahovskyi.onlineshop.service.SecurityService;
 import com.stahovskyi.onlineshop.util.PageGenerator;
 import com.stahovskyi.onlineshop.web.security.entity.Credentials;
 import com.stahovskyi.onlineshop.web.security.entity.Session;
+import com.stahovskyi.onlineshop.web.util.CredentialsUtil;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -15,6 +16,8 @@ import java.util.HashMap;
 
 @RequiredArgsConstructor
 public class RegisterServlet extends HttpServlet {
+
+    private static final int COOKIE_AGE = 10800;
     private final PageGenerator pageGenerator = PageGenerator.instance();
     private final SecurityService securityService;
 
@@ -26,15 +29,11 @@ public class RegisterServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        Credentials credentials = getCredentials(request);
-
+        Credentials credentials = CredentialsUtil.getCredentials(request);
         Session session = securityService.save(credentials);
-      //  String token = securityService.save(credentials);
 
         Cookie cookie = new Cookie("user-token", session.getToken());
-       // Cookie cookie = new Cookie("user-token", token);
-
-        //cookie.setMaxAge(session.getExpireDate().getSecond());
+        cookie.setMaxAge(COOKIE_AGE); // todo -> need one static place for all classes
         response.addCookie(cookie);
         response.sendRedirect("/products");
 
@@ -45,10 +44,4 @@ public class RegisterServlet extends HttpServlet {
         response.getWriter().write(page);*/
     }
 
-    private  Credentials getCredentials(HttpServletRequest request) {
-        return Credentials.builder()
-                .username(request.getParameter("username"))
-                .password(request.getParameter("password"))
-                .build();
-    }
 }
