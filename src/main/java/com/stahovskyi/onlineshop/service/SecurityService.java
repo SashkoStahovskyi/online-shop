@@ -72,7 +72,7 @@ public class SecurityService {
         return false;
     }
 
-    private Session getSession(String token) {
+    public Session getSession(String token) {
         return sessionList.get(token);
     }
 

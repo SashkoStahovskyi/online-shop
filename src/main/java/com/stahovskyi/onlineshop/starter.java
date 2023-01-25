@@ -66,7 +66,7 @@ public class starter {
         context.addServlet(new ServletHolder(deleteServlet), "/products/delete");
         context.addServlet(new ServletHolder(updateServlet), "/products/edit");
         context.addServlet(new ServletHolder(registerServlet), "/registration");
-        context.addServlet(new ServletHolder(loginServlet), "/login");
+        //context.addServlet(new ServletHolder(loginServlet), "/login");
         context.addFilter(new FilterHolder(securityFilter), "/*", EnumSet.of(DispatcherType.REQUEST));
 
         Server server = new Server(3002);
