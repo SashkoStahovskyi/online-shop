@@ -1,5 +1,6 @@
 package com.stahovskyi.onlineshop.service;
 
+import com.stahovskyi.onlineshop.configuration.PropertiesReader;
 import com.stahovskyi.onlineshop.entity.User;
 import com.stahovskyi.onlineshop.security.PasswordEncoder;
 import com.stahovskyi.onlineshop.web.security.entity.Credentials;
@@ -19,7 +20,6 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class SecurityService {
     private static final Map<String, Session> sessionList = new HashMap<>(); // todo --> need threads safe list
-    private static final int COOKIE_AGE = 10800;
     private final PasswordEncoder passwordEncoder;
     private final UserService userService;
 
@@ -50,7 +50,7 @@ public class SecurityService {
     private Session createSession() {
         Session session = Session.builder()
                 .token(generateToken())
-                .expireDate(LocalDateTime.now().plusSeconds(COOKIE_AGE))
+                .expireDate(LocalDateTime.now().plusSeconds(PropertiesReader.getCookieAge()))
                 .cart(new ArrayList<>())
                 .build();
 

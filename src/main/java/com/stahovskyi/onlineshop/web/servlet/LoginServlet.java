@@ -1,6 +1,7 @@
 
 package com.stahovskyi.onlineshop.web.servlet;
 
+import com.stahovskyi.onlineshop.configuration.PropertiesReader;
 import com.stahovskyi.onlineshop.service.SecurityService;
 import com.stahovskyi.onlineshop.util.PageGenerator;
 import com.stahovskyi.onlineshop.web.security.entity.Credentials;
@@ -21,7 +22,6 @@ import java.util.Objects;
 @AllArgsConstructor
 public class LoginServlet extends HttpServlet {
 
-    private static final int COOKIE_AGE = 10800;
     private final PageGenerator pageGenerator = PageGenerator.instance();
     private final SecurityService securityService;
 
@@ -38,7 +38,7 @@ public class LoginServlet extends HttpServlet {
 
         if (Objects.nonNull(session)) {
             Cookie cookie = new Cookie("user-token", session.getToken());
-            cookie.setMaxAge(COOKIE_AGE); // todo -> need secure
+            cookie.setMaxAge(PropertiesReader.getCookieAge());
             response.addCookie(cookie);                      // todo  -> ERRORS in Filter
             response.sendRedirect("/products");
 
