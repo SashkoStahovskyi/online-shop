@@ -30,18 +30,20 @@ public class LoginServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-      /*  Credentials credentials = getCredentials(request);
+        Credentials credentials = getCredentials(request);
         Session session = securityService.login(credentials);
 
         if (Objects.nonNull(session)) {
             Cookie cookie = new Cookie("user-token", session.getToken());
-            cookie.setMaxAge(session.getExpireDate().getSecond());
+           // cookie.setMaxAge(session.getExpireDate().getSecond());
             response.addCookie(cookie);                      // todo  -> ERRORS in Filter
             response.sendRedirect("/products");
+
         } else {
+            // here response error with link to registration page or error below
           //  response.sendError(HttpServletResponse.SC_FORBIDDEN, "Check syntax or create new account");
             response.sendRedirect("/registration");
-        }*/
+        }
     }
 
     private  Credentials getCredentials(HttpServletRequest request) {

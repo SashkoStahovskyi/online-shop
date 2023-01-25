@@ -28,13 +28,13 @@ public class RegisterServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         Credentials credentials = getCredentials(request);
 
-       // Session session = securityService.save(credentials);
-        String token = securityService.save(credentials);
+        Session session = securityService.save(credentials);
+      //  String token = securityService.save(credentials);
 
-        //Cookie cookie = new Cookie("user-token", session.getToken());
-        Cookie cookie = new Cookie("user-token", token);
+        Cookie cookie = new Cookie("user-token", session.getToken());
+       // Cookie cookie = new Cookie("user-token", token);
 
-       // cookie.setMaxAge(session.getExpireDate().getSecond());
+        //cookie.setMaxAge(session.getExpireDate().getSecond());
         response.addCookie(cookie);
         response.sendRedirect("/products");
 
