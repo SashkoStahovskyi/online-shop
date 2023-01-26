@@ -26,7 +26,7 @@ public class SecurityService {
     public Session save(Credentials credentials) {
         String salt = passwordEncoder.generateSalt();  // todo static or one static method
         String hashedPassword = passwordEncoder.generateHash(credentials.getPassword(), salt);
-        userService.save(credentials, hashedPassword, salt); // add salt into cred ??
+        userService.save(credentials, hashedPassword, salt);
         return createSession();
     }
 
@@ -47,6 +47,30 @@ public class SecurityService {
         return null;   // todo maybe possible write it better with optional??
     }
 
+
+    /* public boolean isValid(String token) {
+         if (Objects.nonNull(token)) {
+             Session session = getSession(token);
+             if (token.equals(session.getToken())) {
+                 log.info(" session with token exist in session list !");
+                 return true;
+             }
+         }
+         return false;
+     }*/
+    public boolean isValid(String token) {
+        // true if exist token   // true if session for token exist // true if not expired
+        if (Objects.nonNull(token) && isSessionExist(token) && isSessionNotExpired(token)) {
+            log.info(" Valid session with token exist in session list !");
+            return true;
+        }
+        return false;
+    }
+
+    public Session getSession(String token) {
+        return sessionList.get(token);
+    }
+
     private Session createSession() {
         Session session = Session.builder()
                 .token(generateToken())
@@ -59,21 +83,18 @@ public class SecurityService {
         return session;
     }
 
-    public boolean isValid(String token) {
-
-        // check if exist session for this token in session list
-        if (Objects.nonNull(token)) {
-            Session session = getSession(token);
-            if (token.equals(session.getToken())) {
-                log.info(" session with token exist in session list !");
-                return true;
-            }
+    private boolean isSessionNotExpired(String token) {
+        Session session = sessionList.get(token);
+        if (session.getExpireDate().isBefore(LocalDateTime.now())) {
+            sessionList.remove(token);
+            log.info(" remove session with expired time from session list !");
+            return false;
         }
-        return false;
+        return true;
     }
 
-    public Session getSession(String token) {
-        return sessionList.get(token);
+    private boolean isSessionExist(String token) {
+        return sessionList.containsKey(token);
     }
 
     private String generateToken() {
@@ -82,20 +103,4 @@ public class SecurityService {
     }
 
 }
-
-   /* public boolean isValid(HttpServletRequest request) {  // todo -> use stream for session
-        Cookie[] cookies = request.getCookies();
-        if (Objects.nonNull(cookies)) {
-            for (Cookie cookie : cookies) {
-                if (USER_TOKEN.equals(cookie.getName())) {
-                  *//*  Session session = getSession(cookie.getValue());
-                    request.setAttribute("session", session);*//*
-                    log.info(" Client token is authorize successfully!");
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-*/
 

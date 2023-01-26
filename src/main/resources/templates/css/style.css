@@ -81,3 +81,8 @@ table.table .form-control.error {
 table.table td .add {
     display: none;
 }
+
+img {
+    max-height: 70px;
+    max-width: 70px;
+}
