@@ -67,6 +67,10 @@ public class SecurityService {
         return false;
     }
 
+    public void logout(String token) {
+        sessionList.remove(token);
+    }
+
     public Session getSession(String token) {
         return sessionList.get(token);
     }
@@ -101,6 +105,5 @@ public class SecurityService {
         log.info("Generate new token !");
         return UUID.randomUUID().toString();
     }
-
 }
 
