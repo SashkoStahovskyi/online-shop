@@ -13,8 +13,8 @@ public class UserRowMapper {
         String salt = resultSet.getString("salt");
 
         return User.builder()
-                .username(username)
-                .password(password)
+                .userName(username)
+                .hashedPassword(password)
                 .salt(salt)
                 .build();
     }

@@ -10,6 +10,8 @@ import com.stahovskyi.onlineshop.service.SecurityService;
 import com.stahovskyi.onlineshop.service.UserService;
 import com.stahovskyi.onlineshop.web.security.SecurityFilter;
 import com.stahovskyi.onlineshop.web.servlet.AddServlet;
+import com.stahovskyi.onlineshop.web.servlet.CartServlet;
+import com.stahovskyi.onlineshop.web.servlet.DeleteCartServlet;
 import com.stahovskyi.onlineshop.web.servlet.DeleteServlet;
 import com.stahovskyi.onlineshop.web.servlet.EditeServlet;
 import com.stahovskyi.onlineshop.web.servlet.LoginServlet;
@@ -45,7 +47,7 @@ public class starter {
         ProductService productService = new ProductService(jdbcProductDao);
         PasswordEncoder passwordEncoder = new PasswordEncoder();
         UserService userService = new UserService(jdbcUserDao);
-        SecurityService securityService = new SecurityService(passwordEncoder, userService);
+        SecurityService securityService = new SecurityService(passwordEncoder, productService, userService);
 
         // ---------------- servlet ----------------
         ViewAllServlet viewAllProductsServlet = new ViewAllServlet(productService);
@@ -56,6 +58,8 @@ public class starter {
         LoginServlet loginServlet = new LoginServlet(securityService);
         RegisterServlet registerServlet = new RegisterServlet(securityService);
         LogoutServlet logoutServlet = new LogoutServlet(securityService);
+        CartServlet cartServlet = new CartServlet(securityService);
+        DeleteCartServlet deleteCartServlet = new DeleteCartServlet(securityService);
 
         //---------------- filter --------------------
         SecurityFilter securityFilter = new SecurityFilter(securityService);
@@ -67,6 +71,8 @@ public class starter {
         context.addServlet(new ServletHolder(searchServlet), "/products/search");
         context.addServlet(new ServletHolder(deleteServlet), "/products/delete");
         context.addServlet(new ServletHolder(updateServlet), "/products/edit");
+        context.addServlet(new ServletHolder(cartServlet), "/products/cart");
+        context.addServlet(new ServletHolder(deleteCartServlet), "/cart/delete");
         context.addServlet(new ServletHolder(registerServlet), "/registration");
         context.addServlet(new ServletHolder(loginServlet), "/login");
         context.addServlet(new ServletHolder(logoutServlet), "/logout");

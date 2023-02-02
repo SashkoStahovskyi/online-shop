@@ -8,8 +8,8 @@ import java.util.Objects;
 public class RequestUtil {
     private static final String USER_TOKEN = "user-token";
 
-    public static String getToken(HttpServletRequest httpServletRequest) {
-        Cookie[] cookies = httpServletRequest.getCookies();
+    public static String getToken(HttpServletRequest request) {
+        Cookie[] cookies = request.getCookies();
         if (Objects.nonNull(cookies)) {
             for (Cookie cookie : cookies) {
                 if (USER_TOKEN.equals(cookie.getName())) {
@@ -19,4 +19,5 @@ public class RequestUtil {
         }
         return null;
     }
+
 }

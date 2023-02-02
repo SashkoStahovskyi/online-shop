@@ -2,8 +2,8 @@ package com.stahovskyi.onlineshop.dao.jdbc;
 
 import com.stahovskyi.onlineshop.dao.UserDao;
 import com.stahovskyi.onlineshop.dao.jdbc.mapper.UserRowMapper;
-import com.stahovskyi.onlineshop.web.security.entity.Credentials;
 import com.stahovskyi.onlineshop.entity.User;
+import com.stahovskyi.onlineshop.web.security.entity.Credentials;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -31,7 +31,7 @@ public class JdbcUserDao implements UserDao {
 
         try (Connection connection = dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(GET_USER_QUERY)) {
-            preparedStatement.setString(1, credentials.getUsername());     // todo --> password
+            preparedStatement.setString(1, credentials.getUserName());     // todo --> password
 
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
 
@@ -50,18 +50,18 @@ public class JdbcUserDao implements UserDao {
     }
 
     @Override
-    public void save(Credentials credentials, String hashedPassword, String salt) {
+    public void save(User user) {
         try (Connection connection = dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(SAVE_USER_QUERY)) {
 
-            preparedStatement.setString(1, credentials.getUsername());
-            preparedStatement.setString(2, hashedPassword);
-            preparedStatement.setString(3, salt);
+            preparedStatement.setString(1, user.getUserName());
+            preparedStatement.setString(2, user.getHashedPassword());
+            preparedStatement.setString(3, user.getSalt());
             preparedStatement.executeUpdate();
             log.info("Executed: {}", SAVE_USER_QUERY);
 
         } catch (SQLException e) {
-            throw new RuntimeException(" Unable to save new user to DB !", e);
+            throw new RuntimeException(" Unable to save new user to DB !", e); // todo -> String format
         }
     }
 

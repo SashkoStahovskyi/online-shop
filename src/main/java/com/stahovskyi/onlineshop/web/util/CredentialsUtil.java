@@ -8,7 +8,7 @@ public class CredentialsUtil {
     public static Credentials getCredentials(HttpServletRequest request) {
 
         return Credentials.builder()
-                .username(request.getParameter("username"))
+                .userName(request.getParameter("username"))
                 .password(request.getParameter("password"))
                 .build();
     }

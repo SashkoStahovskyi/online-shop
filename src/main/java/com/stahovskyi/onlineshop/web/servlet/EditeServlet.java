@@ -18,16 +18,19 @@ public class EditeServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         HashMap<String, Object> pageMap = new HashMap();
         int id = Integer.parseInt(request.getParameter("id"));
-        Product product = productService.getById(id).orElseThrow();
+
+        Product product = productService.getById(id).orElseThrow(); // todo finish exception
         pageMap.put("product", product);
-        String page = this.pageGenerator.getPage("edit_products.html", pageMap);
+
+        String page = pageGenerator.getPage("edit_products.html", pageMap);
         response.getWriter().write(page);
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         Product product = ProductRequestMapper.toProduct(request);
-        this.productService.edit(product);
-        String page = this.pageGenerator.getPage("edit_products_response.html", new HashMap());
+        productService.edit(product);
+
+        String page = pageGenerator.getPage("edit_products_response.html", new HashMap());
         response.getWriter().write(page);
     }
 

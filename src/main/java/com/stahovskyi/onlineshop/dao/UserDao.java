@@ -9,5 +9,5 @@ public interface UserDao {
 
     Optional<User> get(Credentials credentials);
 
-    void save(Credentials credentials, String hashedPassword, String salt);
+    void save(User user);
 }

@@ -25,6 +25,7 @@ public class ViewAllServlet extends HttpServlet {
         HashMap<String, Object> pageData = new HashMap<>();
         List<Product> allProducts = productService.getAll();
         pageData.put("products", allProducts);
+
         String page = pageGenerator.getPage("all_products.html", pageData);
         response.getWriter().write(page);
     }

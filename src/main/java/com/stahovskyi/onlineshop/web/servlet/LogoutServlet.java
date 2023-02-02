@@ -18,7 +18,7 @@ public class LogoutServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         Session session = (Session) request.getAttribute("session");
-        String token = session.getToken();
+        String token = session.getToken(); // todo Use one concept when get value token from session and check other classes
         securityService.logout(token);
         log.info(" Remove session !");
         response.sendRedirect("/registration"); // todo -> which variant is better??
