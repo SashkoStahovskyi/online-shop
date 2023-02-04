@@ -7,7 +7,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.sql.DataSource;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -15,17 +20,17 @@ import java.util.Optional;
 @Slf4j
 @RequiredArgsConstructor
 public class JdbcProductDao implements ProductDao {
-    private static final String DELETE_PRODUCT_QUERY = "DELETE FROM products WHERE id=?";
-    private static final String UPDATE_PRODUCT_QUERY = "UPDATE products SET name=?, price=?, description=? WHERE id=?";
-    private static final String GET_ALL_PRODUCT_QUERY = "SELECT id, name, price, description, date FROM products ORDER BY id";
+    private static final String SEARCH_PRODUCT_QUERY = "SELECT id,name, price, date, description FROM products WHERE name LIKE CONCAT( '%',?,'%') OR description LIKE CONCAT( '%',?,'%')";
     private static final String ADD_PRODUCT_QUERY = "INSERT INTO products (name, price, description, date) VALUES (?, ?, ?, ?)";
     private static final String GET_PRODUCT_BY_ID_QUERY = "SELECT id, name, price, description, date FROM products WHERE id=?";
-    private static final String SEARCH_PRODUCT_QUERY = "SELECT id,name, price, date, description FROM products WHERE name LIKE CONCAT( '%',?,'%') OR description LIKE CONCAT( '%',?,'%')";
+    private static final String GET_ALL_PRODUCT_QUERY = "SELECT id, name, price, description, date FROM products ORDER BY id";
+    private static final String UPDATE_PRODUCT_QUERY = "UPDATE products SET name=?, price=?, description=? WHERE id=?";
+    private static final String DELETE_PRODUCT_QUERY = "DELETE FROM products WHERE id=?";
     private static final ProductRowMapper PRODUCT_ROW_MAPPER = new ProductRowMapper();
     private final DataSource dataSource;
 
     @Override
-    public List<Product> findAll() {               // todo -> integration test needed
+    public List<Product> findAll() {
         try (Connection connection = dataSource.getConnection();
              Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery(GET_ALL_PRODUCT_QUERY)) {

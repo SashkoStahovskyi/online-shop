@@ -1,4 +1,4 @@
-package com.stahovskyi.onlineshop.web.security.entity;
+package com.stahovskyi.onlineshop.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

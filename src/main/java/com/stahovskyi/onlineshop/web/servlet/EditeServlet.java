@@ -2,39 +2,42 @@ package com.stahovskyi.onlineshop.web.servlet;
 
 import com.stahovskyi.onlineshop.entity.Product;
 import com.stahovskyi.onlineshop.service.ProductService;
-import com.stahovskyi.onlineshop.web.mapper.ProductRequestMapper;
 import com.stahovskyi.onlineshop.util.PageGenerator;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 
 import java.io.IOException;
 import java.util.HashMap;
 
+import static com.stahovskyi.onlineshop.web.mapper.ProductRequestMapper.toProduct;
+import static com.stahovskyi.onlineshop.web.util.RequestUtil.getProductId;
+
+@RequiredArgsConstructor
 public class EditeServlet extends HttpServlet {
-    private final ProductService productService;
     private final PageGenerator pageGenerator = PageGenerator.instance();
+    private final ProductService productService;
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        HashMap<String, Object> pageMap = new HashMap();
-        int id = Integer.parseInt(request.getParameter("id"));
+    @Override
+    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        Product product = productService.getById(getProductId(request))
+                .orElseThrow();
 
-        Product product = productService.getById(id).orElseThrow(); // todo finish exception
+        HashMap<String, Object> pageMap = new HashMap<>();
         pageMap.put("product", product);
 
-        String page = pageGenerator.getPage("edit_products.html", pageMap);
-        response.getWriter().write(page);
+        response.getWriter()
+                .write(pageGenerator.getPage("edit_products.html", pageMap));
     }
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        Product product = ProductRequestMapper.toProduct(request);
+    @Override
+    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        Product product = toProduct(request);
         productService.edit(product);
 
-        String page = pageGenerator.getPage("edit_products_response.html", new HashMap());
-        response.getWriter().write(page);
+        response.getWriter()
+                .write(pageGenerator.getPage("edit_products_response.html", new HashMap<>()));
     }
 
-    public EditeServlet(ProductService productService) {
-        this.productService = productService;
-    }
 }

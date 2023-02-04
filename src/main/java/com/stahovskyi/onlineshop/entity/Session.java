@@ -1,7 +1,5 @@
-package com.stahovskyi.onlineshop.web.security.entity;
+package com.stahovskyi.onlineshop.entity;
 
-import com.stahovskyi.onlineshop.entity.Product;
-import com.stahovskyi.onlineshop.entity.User;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;

@@ -1,8 +1,6 @@
 package com.stahovskyi.onlineshop.web.security;
 
 import com.stahovskyi.onlineshop.service.SecurityService;
-import com.stahovskyi.onlineshop.web.security.entity.Session;
-import com.stahovskyi.onlineshop.web.util.RequestUtil;
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.FilterConfig;
@@ -17,11 +15,12 @@ import lombok.extern.slf4j.Slf4j;
 import java.io.IOException;
 import java.util.List;
 
+import static com.stahovskyi.onlineshop.web.util.RequestUtil.getRequestToken;
+
 @Slf4j
 @AllArgsConstructor
 public class SecurityFilter implements Filter {
     private final List<String> allowedPath = List.of("/login", "/registration");
-
     private final SecurityService securityService;
 
     @Override
@@ -30,12 +29,14 @@ public class SecurityFilter implements Filter {
     }
 
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws ServletException, IOException {
+    public void doFilter(ServletRequest request,
+                         ServletResponse response,
+                         FilterChain chain) throws ServletException, IOException {
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
         HttpServletResponse httpServletResponse = (HttpServletResponse) response;
 
         String requestURI = httpServletRequest.getRequestURI();
-        String token = RequestUtil.getToken(httpServletRequest);
+        String token = getRequestToken(httpServletRequest);
 
         if (allowedPath.contains(requestURI)) {
             log.info(" Allowed path! ");

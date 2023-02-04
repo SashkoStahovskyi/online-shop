@@ -1,12 +1,10 @@
 
 package com.stahovskyi.onlineshop.web.servlet;
 
-import com.stahovskyi.onlineshop.configuration.PropertiesReader;
+import com.stahovskyi.onlineshop.entity.Credentials;
+import com.stahovskyi.onlineshop.entity.Session;
 import com.stahovskyi.onlineshop.service.SecurityService;
 import com.stahovskyi.onlineshop.util.PageGenerator;
-import com.stahovskyi.onlineshop.web.security.entity.Credentials;
-import com.stahovskyi.onlineshop.web.security.entity.Session;
-import com.stahovskyi.onlineshop.web.util.CredentialsUtil;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -16,7 +14,10 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Objects;
+import java.util.Optional;
+
+import static com.stahovskyi.onlineshop.configuration.PropertiesReader.getLocalProperties;
+import static com.stahovskyi.onlineshop.web.util.RequestUtil.getCredentials;
 
 @Slf4j
 @AllArgsConstructor
@@ -27,27 +28,27 @@ public class LoginServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String page = pageGenerator.getPage("log_in.html", new HashMap<>());
-        response.getWriter().write(page);
+        response.getWriter()
+                .write(pageGenerator.getPage("log_in.html", new HashMap<>()));
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        Credentials credentials = CredentialsUtil.getCredentials(request); // todo -> if Null ??
-        Session session = securityService.login(credentials);
+        Credentials credentials = getCredentials(request)
+                .orElseThrow(() -> new RuntimeException("You have not filled in the fields! Fill the fields correct please!"));
 
-        if (Objects.nonNull(session)) {
-            Cookie cookie = new Cookie("user-token", session.getToken());
-            cookie.setMaxAge(PropertiesReader.getCookieAge());
-            response.addCookie(cookie);                      // todo  -> ERRORS in Filter
+        Optional<Session> session = securityService.login(credentials);
+        if (session.isPresent()) {
+            Cookie cookie = new Cookie("user-token", session.get().getToken());
+            cookie.setMaxAge(Integer
+                    .parseInt(getLocalProperties()
+                            .getProperty("cookie.maxAge")));
+
+            response.addCookie(cookie);
             response.sendRedirect("/products");
 
         } else {
-            // here response error with link to registration page or error below
-            //  response.sendError(HttpServletResponse.SC_FORBIDDEN, "Check syntax or create new account");
-            response.sendRedirect("/registration");
+            response.sendError(HttpServletResponse.SC_FORBIDDEN, "Check syntax or create new account!");
         }
     }
-
-
 }

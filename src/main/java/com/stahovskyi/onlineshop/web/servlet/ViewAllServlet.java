@@ -19,14 +19,13 @@ public class ViewAllServlet extends HttpServlet {
 
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        showAllProducts(response);
-    }
-    private void showAllProducts(HttpServletResponse response) throws IOException {
-        HashMap<String, Object> pageData = new HashMap<>();
         List<Product> allProducts = productService.getAll();
+
+        HashMap<String, Object> pageData = new HashMap<>();
         pageData.put("products", allProducts);
 
-        String page = pageGenerator.getPage("all_products.html", pageData);
-        response.getWriter().write(page);
+        response.getWriter()
+                .write(pageGenerator.getPage("all_products.html", pageData));
     }
+
 }

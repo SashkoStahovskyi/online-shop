@@ -8,14 +8,11 @@ import java.sql.SQLException;
 public class UserRowMapper {
 
     public User mapRow(ResultSet resultSet) throws SQLException {
-        String username = resultSet.getString("user_name");
-        String password = resultSet.getString("hashed_password");
-        String salt = resultSet.getString("salt");
 
         return User.builder()
-                .userName(username)
-                .hashedPassword(password)
-                .salt(salt)
+                .userName(resultSet.getString("user_name"))
+                .hashedPassword(resultSet.getString("hashed_password"))
+                .salt(resultSet.getString("salt"))
                 .build();
     }
 }

@@ -1,7 +1,6 @@
 package com.stahovskyi.onlineshop.web.servlet;
 
 import com.stahovskyi.onlineshop.service.SecurityService;
-import com.stahovskyi.onlineshop.web.util.RequestUtil;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -10,6 +9,9 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 
+import static com.stahovskyi.onlineshop.web.util.RequestUtil.getProductId;
+import static com.stahovskyi.onlineshop.web.util.RequestUtil.getSessionToken;
+
 @Slf4j
 @RequiredArgsConstructor
 public class DeleteCartServlet extends HttpServlet {
@@ -17,10 +19,10 @@ public class DeleteCartServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        int productId = Integer.parseInt(request.getParameter("id"));
-        String token = RequestUtil.getToken(request); // todo get from session ?
+        String token = getSessionToken(request);
+        int productId = getProductId(request);
 
-        securityService.removeFromCart(productId, token);  // todo which service process this??
+        securityService.removeFromCart(productId, token);
         response.sendRedirect("/products/cart");
     }
 }

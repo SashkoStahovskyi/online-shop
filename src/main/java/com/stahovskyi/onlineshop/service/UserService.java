@@ -2,8 +2,8 @@
 package com.stahovskyi.onlineshop.service;
 
 import com.stahovskyi.onlineshop.dao.UserDao;
+import com.stahovskyi.onlineshop.entity.Credentials;
 import com.stahovskyi.onlineshop.entity.User;
-import com.stahovskyi.onlineshop.web.security.entity.Credentials;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Optional;

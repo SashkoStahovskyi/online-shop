@@ -1,11 +1,9 @@
 package com.stahovskyi.onlineshop.web.servlet;
 
-import com.stahovskyi.onlineshop.configuration.PropertiesReader;
+import com.stahovskyi.onlineshop.entity.Credentials;
+import com.stahovskyi.onlineshop.entity.Session;
 import com.stahovskyi.onlineshop.service.SecurityService;
 import com.stahovskyi.onlineshop.util.PageGenerator;
-import com.stahovskyi.onlineshop.web.security.entity.Credentials;
-import com.stahovskyi.onlineshop.web.security.entity.Session;
-import com.stahovskyi.onlineshop.web.util.CredentialsUtil;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -15,6 +13,9 @@ import lombok.RequiredArgsConstructor;
 import java.io.IOException;
 import java.util.HashMap;
 
+import static com.stahovskyi.onlineshop.configuration.PropertiesReader.getLocalProperties;
+import static com.stahovskyi.onlineshop.web.util.RequestUtil.getCredentials;
+
 @RequiredArgsConstructor
 public class RegisterServlet extends HttpServlet {
     private final PageGenerator pageGenerator = PageGenerator.instance();
@@ -22,25 +23,23 @@ public class RegisterServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String page = pageGenerator.getPage("registration.html", new HashMap<>());
-        response.getWriter().write(page);
+        response.getWriter()
+                .write(pageGenerator.getPage("registration.html", new HashMap<>()));
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        Credentials credentials = CredentialsUtil.getCredentials(request);
-        Session session = securityService.save(credentials);
+        Credentials credentials = getCredentials(request)
+                .orElseThrow(() -> new RuntimeException("You have not filled in the fields! Fill the fields correct please!"));
 
+        Session session = securityService.save(credentials);
         Cookie cookie = new Cookie("user-token", session.getToken());
-        cookie.setMaxAge(PropertiesReader.getCookieAge());
+        cookie.setMaxAge(Integer
+                .parseInt(getLocalProperties()
+                        .getProperty("cookie.maxAge")));
+
         response.addCookie(cookie);
         response.sendRedirect("/products");
-
-        // todo  -> ERRORS with issue if Same username.
-        // 500 -> user already exist
-
-       /* String page = pageGenerator.getPage("registration_response.html", new HashMap<>());
-        response.getWriter().write(page);*/
     }
 
 }

@@ -1,10 +1,8 @@
 package com.stahovskyi.onlineshop;
 
-import com.stahovskyi.onlineshop.configuration.PropertiesReader;
-import com.stahovskyi.onlineshop.dao.jdbc.ConnectionFactory;
+import com.stahovskyi.onlineshop.dao.jdbc.JdbcConnectionFactory;
 import com.stahovskyi.onlineshop.dao.jdbc.JdbcProductDao;
 import com.stahovskyi.onlineshop.dao.jdbc.JdbcUserDao;
-import com.stahovskyi.onlineshop.security.PasswordEncoder;
 import com.stahovskyi.onlineshop.service.ProductService;
 import com.stahovskyi.onlineshop.service.SecurityService;
 import com.stahovskyi.onlineshop.service.UserService;
@@ -28,16 +26,17 @@ import org.eclipse.jetty.servlet.ServletHolder;
 import java.util.EnumSet;
 import java.util.Properties;
 
+import static com.stahovskyi.onlineshop.configuration.PropertiesReader.getLocalProperties;
+
 public class starter {
 
     public static void main(String[] args) throws Exception {
 
         //-------------- read properties ----------
-        PropertiesReader propertiesReader = new PropertiesReader();
-        Properties configProperties = propertiesReader.getLocalProperties();
+        Properties configProperties = getLocalProperties();
 
         // ------------ configure connection with DB -----
-        ConnectionFactory connectionFactory = new ConnectionFactory(configProperties);
+        JdbcConnectionFactory connectionFactory = new JdbcConnectionFactory(configProperties);
 
         // ---------------  dao  ------------------
         JdbcProductDao jdbcProductDao = new JdbcProductDao(connectionFactory);
@@ -45,9 +44,8 @@ public class starter {
 
         // ---------------- service  ---------------
         ProductService productService = new ProductService(jdbcProductDao);
-        PasswordEncoder passwordEncoder = new PasswordEncoder();
         UserService userService = new UserService(jdbcUserDao);
-        SecurityService securityService = new SecurityService(passwordEncoder, productService, userService);
+        SecurityService securityService = new SecurityService(productService, userService);
 
         // ---------------- servlet ----------------
         ViewAllServlet viewAllProductsServlet = new ViewAllServlet(productService);

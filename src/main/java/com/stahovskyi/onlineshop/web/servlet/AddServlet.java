@@ -19,9 +19,9 @@ public class AddServlet extends HttpServlet {
     private final PageGenerator pageGenerator = PageGenerator.instance();
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws  IOException {
-        String page = pageGenerator.getPage("add_product.html", new HashMap<>());
-        response.getWriter().println(page);
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        response.getWriter()
+                .println(pageGenerator.getPage("add_product.html", new HashMap<>()));
     }
 
     @Override
@@ -29,8 +29,7 @@ public class AddServlet extends HttpServlet {
         Product product = toProduct(request);
         productService.addProduct(product);
 
-        PageGenerator pageGenerator = PageGenerator.instance();
-        String page = pageGenerator.getPage("add_product_response.html",new HashMap<>());
-        response.getWriter().println(page);
+        response.getWriter()
+                .println(pageGenerator.getPage("add_product_response.html", new HashMap<>()));
     }
 }

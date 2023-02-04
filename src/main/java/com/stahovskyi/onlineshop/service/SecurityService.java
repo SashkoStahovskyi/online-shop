@@ -1,16 +1,15 @@
 package com.stahovskyi.onlineshop.service;
 
-import com.stahovskyi.onlineshop.configuration.PropertiesReader;
+import com.stahovskyi.onlineshop.entity.Credentials;
 import com.stahovskyi.onlineshop.entity.Product;
+import com.stahovskyi.onlineshop.entity.Session;
 import com.stahovskyi.onlineshop.entity.User;
-import com.stahovskyi.onlineshop.security.PasswordEncoder;
-import com.stahovskyi.onlineshop.web.security.entity.Credentials;
-import com.stahovskyi.onlineshop.web.security.entity.Session;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,17 +17,20 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
+import static com.stahovskyi.onlineshop.configuration.PropertiesReader.getLocalProperties;
+import static com.stahovskyi.onlineshop.util.PasswordEncoder.generateHash;
+import static com.stahovskyi.onlineshop.util.PasswordEncoder.generateSalt;
+
 @Slf4j
 @RequiredArgsConstructor
 public class SecurityService {
-    private static final Map<String, Session> sessionList = new HashMap<>(); // todo --> need threads safe list
-    private final PasswordEncoder passwordEncoder;
+    private static final Map<String, Session> sessionList = Collections.synchronizedMap(new HashMap<>());
     private final ProductService productService;
     private final UserService userService;
 
     public Session save(Credentials credentials) {
-        String salt = passwordEncoder.generateSalt();  // todo static or one static method
-        String hashedPassword = passwordEncoder.generateHash(credentials.getPassword(), salt);
+        String salt = generateSalt();
+        String hashedPassword = generateHash(credentials.getPassword(), salt);
 
         User user = User.builder()
                 .salt(salt)
@@ -37,42 +39,38 @@ public class SecurityService {
                 .build();
 
         userService.save(user);
-
         Session session = createSession(user);
         session.setUser(user);
+
         return session;
     }
 
-    public Session login(Credentials credentials) {
+    public Optional<Session> login(Credentials credentials) {
         Optional<User> user = userService.getUser(credentials);
 
-        if (user.isPresent()) {  // todo realize with consumer ??
-            User userFromDb = user.get(); // todo -> fix environment name for this method
+        if (user.isPresent()) {
+            User userFromDb = user.get();
             String hashedPassword = userFromDb.getHashedPassword();
             String salt = userFromDb.getSalt();
-
-            String hash = passwordEncoder.generateHash(credentials.getPassword(), salt);
+            String hash = generateHash(credentials.getPassword(), salt);
 
             if (hashedPassword.equals(hash)) {
                 log.info(" User credentials have been successfully authenticated !");
                 Session session = createSession(userFromDb);
                 session.setUser(userFromDb);
-                return session;
+
+                return Optional.of(session);
             }
         }
-        return null;   // todo maybe possible write it better with optional??
+        return Optional.empty();
     }
 
-    public void addToCart(int productId, String token) { // todo -> do better with optional
+    public void addToCart(int productId, String token) {
         Session session = getSession(token);
         List<Product> cartList = session.getCart();
 
-        Optional<Product> product = productService.getById(productId);
-
-        if (product.isPresent()) {
-            Product product1 = product.get();
-            cartList.add(product1);
-        }
+        Product product = productService.getById(productId).orElseThrow();
+        cartList.add(product);
     }
 
     public void removeFromCart(int productId, String token) {
@@ -83,7 +81,6 @@ public class SecurityService {
     }
 
     public boolean isValid(String token) {
-        // true if exist token   // true if session for token exist // true if not expired
         if (Objects.nonNull(token) && isSessionExist(token) && isSessionNotExpired(token)) {
             log.info(" Valid session with token exist in session list !");
             return true;
@@ -102,13 +99,13 @@ public class SecurityService {
     private Session createSession(User user) {
         Session session = Session.builder()
                 .token(generateToken())
-                .expireDate(LocalDateTime.now().plusSeconds(PropertiesReader.getCookieAge()))
+                .expireDate(LocalDateTime.now().plusSeconds(Long.parseLong(getLocalProperties().getProperty("cookie.maxAge"))))
                 .cart(new ArrayList<>())
                 .user(user)
                 .build();
 
         sessionList.put(session.getToken(), session);
-        log.info("Create new session for user: {}!", session.getUser().getUserName()); // todo StringFormat for user
+        log.info("Create new session for user: {}!", session.getUser().getUserName());
         return session;
     }
 

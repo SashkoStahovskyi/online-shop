@@ -11,12 +11,12 @@ import java.util.Properties;
 import java.util.logging.Logger;
 
 
-public class ConnectionFactory implements DataSource {
+public class JdbcConnectionFactory implements DataSource {
     private final String url;
     private final String username;
     private final String password;
 
-    public ConnectionFactory(Properties properties) {
+    public JdbcConnectionFactory(Properties properties) {
         this.url = properties.getProperty("db.url");
         this.username = properties.getProperty("db.user");
         this.password = properties.getProperty("db.password");
@@ -76,32 +76,7 @@ public class ConnectionFactory implements DataSource {
     public boolean isWrapperFor(Class<?> iface) {
         return false;
     }
+
 }
 
-  /*  private final CashedConnection connection;
-
-    @SneakyThrows
-    public ConnectionFactory(Properties properties) { // todo --> need other exception??
-
-        this.uri = properties.getProperty("URI");
-        this.username = properties.getProperty("USERNAME");
-        this.password = properties.getProperty("PASSWORD");
-
-
-
-        Connection realConnection = DriverManager.getConnection(uri, username, password);
-        this.connection = new CashedConnection(realConnection);
-    }
-
-    public Connection getConnection() {
-        return connection;
-    }
-
-    @Override
-    public Connection getConnection(String username, String password) throws SQLException {
-        CashedConnection connection = this.connection;
-        while (connection.isBusy);
-        connection.isBusy = true;
-        return connection;
-    } */
 
