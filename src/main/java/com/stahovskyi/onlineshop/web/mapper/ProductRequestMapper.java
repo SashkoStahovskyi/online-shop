@@ -3,7 +3,7 @@ package com.stahovskyi.onlineshop.web.mapper;
 import com.stahovskyi.onlineshop.entity.Product;
 import jakarta.servlet.http.HttpServletRequest;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 public class ProductRequestMapper {
 
@@ -13,7 +13,7 @@ public class ProductRequestMapper {
                 .name(request.getParameter("name"))
                 .price(Double.parseDouble(request.getParameter("price")))
                 .description(request.getParameter("description"))
-                .date(LocalDateTime.now())
+                .date(LocalDate.now())
                 .build();
 
         if (request.getParameter("id") != null) {

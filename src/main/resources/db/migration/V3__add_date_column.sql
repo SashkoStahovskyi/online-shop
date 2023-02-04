@@ -1,1 +1,1 @@
-ALTER TABLE products ADD date TIMESTAMP;
+ALTER TABLE products ADD date DATE;

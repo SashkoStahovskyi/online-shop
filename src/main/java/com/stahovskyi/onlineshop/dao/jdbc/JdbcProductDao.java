@@ -8,11 +8,11 @@ import lombok.extern.slf4j.Slf4j;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -56,7 +56,7 @@ public class JdbcProductDao implements ProductDao {
             preparedStatement.setString(1, product.getName());
             preparedStatement.setDouble(2, product.getPrice());
             preparedStatement.setString(3, product.getDescription());
-            preparedStatement.setTimestamp(4, Timestamp.valueOf(product.getDate()));
+            preparedStatement.setDate(4, Date.valueOf(product.getDate()));
             preparedStatement.executeUpdate();
             log.info("Executed: {}", preparedStatement);
 
