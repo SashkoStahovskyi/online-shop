@@ -13,6 +13,7 @@ public class UserRowMapper {
                 .userName(resultSet.getString("user_name"))
                 .hashedPassword(resultSet.getString("hashed_password"))
                 .salt(resultSet.getString("salt"))
+                .role(User.Role.valueOf(resultSet.getString("role")))
                 .build();
     }
 }

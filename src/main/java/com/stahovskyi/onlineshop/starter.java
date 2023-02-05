@@ -6,7 +6,8 @@ import com.stahovskyi.onlineshop.dao.jdbc.JdbcUserDao;
 import com.stahovskyi.onlineshop.service.ProductService;
 import com.stahovskyi.onlineshop.service.SecurityService;
 import com.stahovskyi.onlineshop.service.UserService;
-import com.stahovskyi.onlineshop.web.security.SecurityFilter;
+import com.stahovskyi.onlineshop.web.servlet.filter.AuthorizationFilter;
+import com.stahovskyi.onlineshop.web.servlet.filter.SecurityFilter;
 import com.stahovskyi.onlineshop.web.servlet.AddServlet;
 import com.stahovskyi.onlineshop.web.servlet.CartServlet;
 import com.stahovskyi.onlineshop.web.servlet.DeleteCartServlet;
@@ -61,6 +62,7 @@ public class starter {
 
         //---------------- filter --------------------
         SecurityFilter securityFilter = new SecurityFilter(securityService);
+        AuthorizationFilter authorizationFilter = new AuthorizationFilter();
 
         //--------------- web server config -----------
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
@@ -75,6 +77,7 @@ public class starter {
         context.addServlet(new ServletHolder(loginServlet), "/login");
         context.addServlet(new ServletHolder(logoutServlet), "/logout");
         context.addFilter(new FilterHolder(securityFilter), "/*", EnumSet.of(DispatcherType.REQUEST));
+        context.addFilter(new FilterHolder(authorizationFilter), "/*", EnumSet.of(DispatcherType.REQUEST));
 
         Server server = new Server(3002);
         server.setHandler(context);

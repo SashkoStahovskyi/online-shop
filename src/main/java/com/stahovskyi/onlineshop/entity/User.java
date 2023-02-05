@@ -15,5 +15,10 @@ public class User {
     private String userName;
     private String hashedPassword;
     private String salt;
+    private Role role;
+
+    public enum Role {
+        GUEST, USER, ADMIN
+    }
 
 }

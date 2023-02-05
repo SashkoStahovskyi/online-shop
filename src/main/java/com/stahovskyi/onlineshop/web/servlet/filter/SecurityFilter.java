@@ -1,4 +1,4 @@
-package com.stahovskyi.onlineshop.web.security;
+package com.stahovskyi.onlineshop.web.servlet.filter;
 
 import com.stahovskyi.onlineshop.service.SecurityService;
 import jakarta.servlet.Filter;
@@ -38,8 +38,8 @@ public class SecurityFilter implements Filter {
         String requestURI = httpServletRequest.getRequestURI();
         String token = getRequestToken(httpServletRequest);
 
-        if (allowedPath.contains(requestURI)) {
-            log.info(" Allowed path! ");
+        if (allowedPath.contains(requestURI)) { // todo request util method
+            log.info(" Allowed path to login or registration page! ");
             chain.doFilter(httpServletRequest, httpServletResponse);
             return;
         }

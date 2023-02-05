@@ -9,9 +9,6 @@ public class ProductRowMapper {
 
     public Product mapRow(ResultSet resultSet) throws SQLException {
 
-      /*  LocalDateTime dateTime = resultSet.getTimestamp("date").toLocalDateTime();
-        DateTimeFormatter date = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-*/
         return Product.builder()
                 .id(resultSet.getInt("id"))
                 .date(resultSet.getDate("date").toLocalDate())

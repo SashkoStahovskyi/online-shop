@@ -18,8 +18,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class JdbcUserDao implements UserDao {
 
-    private static final String GET_USER_QUERY = "SELECT user_name, hashed_password, salt FROM users WHERE (user_name) LIKE ?;";
-    private static final String SAVE_USER_QUERY = "INSERT INTO users (user_name, hashed_password, salt) VALUES (?, ?, ?)";
+    private static final String GET_USER_QUERY = "SELECT user_name, hashed_password, salt, role FROM users WHERE (user_name) LIKE ?;";
+    private static final String SAVE_USER_QUERY = "INSERT INTO users (user_name, hashed_password, salt, role) VALUES (?, ?, ?, ?)";
     private final static UserRowMapper USER_ROW_MAPPER = new UserRowMapper();
     private final DataSource dataSource;
 
@@ -54,6 +54,7 @@ public class JdbcUserDao implements UserDao {
             preparedStatement.setString(1, user.getUserName());
             preparedStatement.setString(2, user.getHashedPassword());
             preparedStatement.setString(3, user.getSalt());
+            preparedStatement.setString(4, user.getRole().toString());
             preparedStatement.executeUpdate();
             log.info("Executed: {}", SAVE_USER_QUERY);
 
