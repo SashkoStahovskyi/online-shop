@@ -36,7 +36,7 @@ public class SecurityService {
                 .salt(salt)
                 .userName(credentials.getUserName())
                 .hashedPassword(hashedPassword)
-                .role(User.Role.ADMIN) // here some create Role logic
+                .role(User.Role.USER) // imitation logic for creating a role for a user
                 .build();
 
         userService.save(user);

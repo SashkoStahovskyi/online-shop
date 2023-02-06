@@ -18,8 +18,8 @@ import java.util.List;
 @Slf4j
 public class AuthorizationFilter implements Filter {
     private final List<String> userAllowedPath = List.of("/products", "/products/search", "/products/cart",
-            "/cart/delete");
-    private final List<String> guestAllowedPath = List.of("/products", "/products/search");
+            "/cart/delete", "/logout");
+    private final List<String> guestAllowedPath = List.of("/products", "/products/search", "/logout");
     private final List<String> allowedPath = List.of("/login", "/registration");
 
 
