@@ -6,8 +6,6 @@ import com.stahovskyi.onlineshop.dao.jdbc.JdbcUserDao;
 import com.stahovskyi.onlineshop.service.ProductService;
 import com.stahovskyi.onlineshop.service.SecurityService;
 import com.stahovskyi.onlineshop.service.UserService;
-import com.stahovskyi.onlineshop.web.servlet.filter.AuthorizationFilter;
-import com.stahovskyi.onlineshop.web.servlet.filter.SecurityFilter;
 import com.stahovskyi.onlineshop.web.servlet.AddServlet;
 import com.stahovskyi.onlineshop.web.servlet.CartServlet;
 import com.stahovskyi.onlineshop.web.servlet.DeleteCartServlet;
@@ -18,6 +16,8 @@ import com.stahovskyi.onlineshop.web.servlet.LogoutServlet;
 import com.stahovskyi.onlineshop.web.servlet.RegisterServlet;
 import com.stahovskyi.onlineshop.web.servlet.SearchServlet;
 import com.stahovskyi.onlineshop.web.servlet.ViewAllServlet;
+import com.stahovskyi.onlineshop.web.servlet.filter.AuthorizationFilter;
+import com.stahovskyi.onlineshop.web.servlet.filter.SecurityFilter;
 import jakarta.servlet.DispatcherType;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.FilterHolder;
@@ -49,11 +49,11 @@ public class starter {
         SecurityService securityService = new SecurityService(productService, userService);
 
         // ---------------- servlet ----------------
-        ViewAllServlet viewAllProductsServlet = new ViewAllServlet(productService);
-        AddServlet addProductServlet = new AddServlet(productService);
+        ViewAllServlet viewAllProductsServlet = new ViewAllServlet(productService, securityService);
+        AddServlet addProductServlet = new AddServlet(productService, securityService);
         DeleteServlet deleteServlet = new DeleteServlet(productService);
-        EditeServlet updateServlet = new EditeServlet(productService);
-        SearchServlet searchServlet = new SearchServlet(productService);
+        EditeServlet updateServlet = new EditeServlet(productService, securityService);
+        SearchServlet searchServlet = new SearchServlet(productService, securityService);
         LoginServlet loginServlet = new LoginServlet(securityService);
         RegisterServlet registerServlet = new RegisterServlet(securityService);
         LogoutServlet logoutServlet = new LogoutServlet(securityService);

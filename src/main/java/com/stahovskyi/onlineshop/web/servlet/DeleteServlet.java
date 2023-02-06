@@ -12,11 +12,12 @@ import static com.stahovskyi.onlineshop.web.util.RequestUtil.getProductId;
 
 @AllArgsConstructor
 public class DeleteServlet extends HttpServlet {
-    private ProductService productService;
+    private final ProductService productService;
 
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         productService.delete(getProductId(request));
+
         response.sendRedirect("/products");
     }
 }

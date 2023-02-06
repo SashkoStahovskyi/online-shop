@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.io.IOException;
 import java.util.HashMap;
 
+import static com.stahovskyi.onlineshop.web.util.RequestUtil.getProductId;
 import static com.stahovskyi.onlineshop.web.util.RequestUtil.getRequestToken;
 
 
@@ -28,6 +29,7 @@ public class CartServlet extends HttpServlet {
         HashMap<String, Object> pageData = new HashMap<>();
         pageData.put("cartProducts", session.getCart());
         pageData.put("userName", session.getUser().getUserName());
+        pageData.put("userRole", session.getUser().getRole());
 
         response.getWriter()
                 .write(pageGenerator.getPage("cart.html", pageData));
@@ -35,8 +37,8 @@ public class CartServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        int productId = Integer.parseInt(request.getParameter("id"));
-        securityService.addToCart(productId, getRequestToken(request));
+        securityService.addToCart(getProductId(request), getRequestToken(request));
+
         log.info(" add product to cart! ");
         response.sendRedirect("/products");
     }

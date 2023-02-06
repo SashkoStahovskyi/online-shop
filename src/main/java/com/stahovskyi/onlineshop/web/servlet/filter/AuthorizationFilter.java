@@ -17,16 +17,11 @@ import java.util.List;
 
 @Slf4j
 public class AuthorizationFilter implements Filter {
-
-    private final List<String> allowedPath = List.of("/login", "/registration");
-
-    private final List<String> adminAllowedPath = List.of("/products", "/products/add", "/products/search",
-            "/products/delete", "/products/cart", "/products/edit", "/cart/delete");
-
     private final List<String> userAllowedPath = List.of("/products", "/products/search", "/products/cart",
             "/cart/delete");
-
     private final List<String> guestAllowedPath = List.of("/products", "/products/search");
+    private final List<String> allowedPath = List.of("/login", "/registration");
+
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
@@ -50,7 +45,7 @@ public class AuthorizationFilter implements Filter {
         Session session = (Session) httpServletRequest.getAttribute("session");
         User.Role role = session.getUser().getRole();
 
-        if (User.Role.ADMIN == role && adminAllowedPath.contains(requestURI)) {
+        if (User.Role.ADMIN == role) {
             log.info(" Allowed path for " + role);
             chain.doFilter(httpServletRequest, httpServletResponse);
 
