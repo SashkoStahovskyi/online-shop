@@ -4,7 +4,6 @@ package com.stahovskyi.onlineshop.web.servlet;
 import com.stahovskyi.onlineshop.entity.Credentials;
 import com.stahovskyi.onlineshop.entity.Session;
 import com.stahovskyi.onlineshop.service.SecurityService;
-import com.stahovskyi.onlineshop.util.PageGenerator;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -17,19 +16,19 @@ import java.util.HashMap;
 import java.util.Optional;
 
 import static com.stahovskyi.onlineshop.configuration.PropertiesReader.getLocalProperties;
+import static com.stahovskyi.onlineshop.util.PageGenerator.getPageGeneratorInstance;
 import static com.stahovskyi.onlineshop.web.util.RequestUtil.getCredentials;
 
 @Slf4j
 @AllArgsConstructor
 public class LoginServlet extends HttpServlet {
-
-    private final PageGenerator pageGenerator = PageGenerator.instance();
     private final SecurityService securityService;
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.getWriter()
-                .write(pageGenerator.getPage("log_in.html", new HashMap<>()));
+                .write(getPageGeneratorInstance()
+                        .getPage("log_in.html", new HashMap<>()));
     }
 
     @Override
@@ -51,4 +50,5 @@ public class LoginServlet extends HttpServlet {
             response.sendError(HttpServletResponse.SC_FORBIDDEN, "Check syntax or create new account!");
         }
     }
+
 }

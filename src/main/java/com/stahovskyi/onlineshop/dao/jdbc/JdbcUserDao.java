@@ -17,7 +17,6 @@ import java.util.Optional;
 @Slf4j
 @RequiredArgsConstructor
 public class JdbcUserDao implements UserDao {
-
     private static final String GET_USER_QUERY = "SELECT user_name, hashed_password, salt, role FROM users WHERE (user_name) LIKE ?;";
     private static final String SAVE_USER_QUERY = "INSERT INTO users (user_name, hashed_password, salt, role) VALUES (?, ?, ?, ?)";
     private final static UserRowMapper USER_ROW_MAPPER = new UserRowMapper();

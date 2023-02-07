@@ -4,7 +4,6 @@ import com.stahovskyi.onlineshop.entity.Product;
 import com.stahovskyi.onlineshop.entity.Session;
 import com.stahovskyi.onlineshop.service.ProductService;
 import com.stahovskyi.onlineshop.service.SecurityService;
-import com.stahovskyi.onlineshop.util.PageGenerator;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -15,13 +14,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.stahovskyi.onlineshop.util.PageGenerator.getPageGeneratorInstance;
 import static com.stahovskyi.onlineshop.web.util.RequestUtil.getRequestToken;
 
 @AllArgsConstructor
 public class SearchServlet extends HttpServlet {
-    private final PageGenerator pageGenerator = PageGenerator.instance();
-    private final ProductService productService;
     private final SecurityService securityService;
+    private final ProductService productService;
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -34,7 +33,8 @@ public class SearchServlet extends HttpServlet {
         pageData.put("userRole", session.getUser().getRole());
 
         response.getWriter()
-                .write(pageGenerator.getPage("all_products.html", pageData));
+                .write(getPageGeneratorInstance()
+                        .getPage("all_products.html", pageData));
     }
 
 }

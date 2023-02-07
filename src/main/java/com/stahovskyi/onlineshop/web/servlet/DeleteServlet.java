@@ -15,9 +15,9 @@ public class DeleteServlet extends HttpServlet {
     private final ProductService productService;
 
     @Override
-    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         productService.delete(getProductId(request));
-
         response.sendRedirect("/products");
     }
+
 }

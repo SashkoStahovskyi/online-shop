@@ -36,7 +36,7 @@ public class SecurityService {
                 .salt(salt)
                 .userName(credentials.getUserName())
                 .hashedPassword(hashedPassword)
-                .role(User.Role.USER) // imitation logic for creating a role for a user
+                .role(User.Role.ADMIN) // imitation logic for creating a role for a user
                 .build();
 
         userService.save(user);
@@ -59,7 +59,6 @@ public class SecurityService {
                 log.info(" User credentials have been successfully authenticated !");
                 Session session = createSession(userFromDb);
                 session.setUser(userFromDb);
-
                 return Optional.of(session);
             }
         }
@@ -69,7 +68,6 @@ public class SecurityService {
     public void addToCart(int productId, String token) {
         Session session = getSession(token);
         List<Product> cartList = session.getCart();
-
         Product product = productService.getById(productId).orElseThrow();
         cartList.add(product);
     }

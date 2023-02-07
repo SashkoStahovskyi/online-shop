@@ -49,16 +49,16 @@ public class starter {
         SecurityService securityService = new SecurityService(productService, userService);
 
         // ---------------- servlet ----------------
-        ViewAllServlet viewAllProductsServlet = new ViewAllServlet(productService, securityService);
-        AddServlet addProductServlet = new AddServlet(productService, securityService);
-        DeleteServlet deleteServlet = new DeleteServlet(productService);
-        EditeServlet updateServlet = new EditeServlet(productService, securityService);
-        SearchServlet searchServlet = new SearchServlet(productService, securityService);
-        LoginServlet loginServlet = new LoginServlet(securityService);
+        ViewAllServlet viewAllProductsServlet = new ViewAllServlet(securityService, productService);
+        SearchServlet searchServlet = new SearchServlet(securityService, productService);
+        AddServlet addProductServlet = new AddServlet(securityService, productService);
+        EditeServlet updateServlet = new EditeServlet(securityService, productService);
+        DeleteCartServlet deleteCartServlet = new DeleteCartServlet(securityService);
         RegisterServlet registerServlet = new RegisterServlet(securityService);
         LogoutServlet logoutServlet = new LogoutServlet(securityService);
+        DeleteServlet deleteServlet = new DeleteServlet(productService);
+        LoginServlet loginServlet = new LoginServlet(securityService);
         CartServlet cartServlet = new CartServlet(securityService);
-        DeleteCartServlet deleteCartServlet = new DeleteCartServlet(securityService);
 
         //---------------- filter --------------------
         SecurityFilter securityFilter = new SecurityFilter(securityService);
@@ -79,7 +79,7 @@ public class starter {
         context.addFilter(new FilterHolder(securityFilter), "/*", EnumSet.of(DispatcherType.REQUEST));
         context.addFilter(new FilterHolder(authorizationFilter), "/*", EnumSet.of(DispatcherType.REQUEST));
 
-        Server server = new Server(3002);
+        Server server = new Server(Integer.parseInt(getLocalProperties().getProperty("server.port")));
         server.setHandler(context);
         server.start();
     }

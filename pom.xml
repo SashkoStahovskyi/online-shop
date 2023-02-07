@@ -20,7 +20,6 @@
             <groupId>jakarta.servlet</groupId>
             <artifactId>jakarta.servlet-api</artifactId>
             <version>5.0.0</version>
-            <scope>provided</scope>
         </dependency>
 
         <dependency>
@@ -35,7 +34,7 @@
             <version>11.0.12</version>
         </dependency>
 
-        <!-- Freemarker -->
+        <!-- Template -->
         <dependency>
             <groupId>org.freemarker</groupId>
             <artifactId>freemarker</artifactId>
@@ -47,29 +46,13 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>1.18.24</version>
-            <scope>provided</scope>
         </dependency>
 
-        <!-- Mockito -->
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-core</artifactId>
-            <version>4.6.1</version>
-            <scope>test</scope>
-        </dependency>
-
-       <!-- LOGG -->
+        <!-- Logging-->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>1.7.30</version>
-        </dependency>
-
-        <!-- Codec -->
-        <dependency>
-            <groupId>commons-codec</groupId>
-            <artifactId>commons-codec</artifactId>
-            <version>1.15</version>
         </dependency>
 
         <dependency>
@@ -78,6 +61,12 @@
             <version>1.2.9</version>
         </dependency>
 
+        <!-- Password Encryptor  -->
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>1.15</version>
+        </dependency>
 
         <!-- DB -->
         <dependency>
@@ -87,17 +76,23 @@
         </dependency>
 
         <!-- TEST -->
-
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
             <version>5.9.0</version>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>4.6.1</version>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 
-
-    <!-- DB Migrations -->
+    <!--  Migrations -->
     <build>
         <plugins>
             <plugin>
@@ -113,7 +108,5 @@
             </plugin>
         </plugins>
     </build>
-
-
 
 </project>

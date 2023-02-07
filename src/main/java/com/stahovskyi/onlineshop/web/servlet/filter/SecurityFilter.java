@@ -38,7 +38,7 @@ public class SecurityFilter implements Filter {
         String requestURI = httpServletRequest.getRequestURI();
         String token = getRequestToken(httpServletRequest);
 
-        if (allowedPath.contains(requestURI)) { // todo request util method
+        if (allowedPath.contains(requestURI)) {
             log.info(" Allowed path to login or registration page! ");
             chain.doFilter(httpServletRequest, httpServletResponse);
             return;

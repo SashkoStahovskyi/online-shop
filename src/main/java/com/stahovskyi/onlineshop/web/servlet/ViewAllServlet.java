@@ -18,10 +18,9 @@ import static com.stahovskyi.onlineshop.web.util.RequestUtil.getRequestToken;
 
 @AllArgsConstructor
 public class ViewAllServlet extends HttpServlet {
-    private final PageGenerator pageGenerator = PageGenerator.instance();
-    private final ProductService productService;
-
+    private final PageGenerator pageGenerator = PageGenerator.getPageGeneratorInstance();
     private final SecurityService securityService;
+    private final ProductService productService;
 
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {

@@ -25,4 +25,5 @@ public class DeleteCartServlet extends HttpServlet {
         securityService.removeFromCart(productId, token);
         response.sendRedirect("/products/cart");
     }
+
 }
